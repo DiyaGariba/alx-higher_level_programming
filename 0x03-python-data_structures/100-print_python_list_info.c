@@ -1,42 +1,21 @@
-#include "lists.h"
-#include <stddef.h>
+#include <Python.h>
+#include <listobject.h>
+#include <object.h>
 
 /**
- * is_palindrome - determine if singly linked list is palindrome
- * @head: pointer to head of singly linked list
- * Return: 0 if not, 1 if palindrome
+ * print_python_list_info - prints some basic info about Python lists
+ * @p: Python object
  */
-int is_palindrome(listint_t **head)
+void print_python_list_info(PyObject *p)
 {
-	listint_t *tmp = *head;
-	unsigned int size = 0, i = 0;
-	int data[10240];
+	ssize_t i, size = PyList_Size(p);
+	PyListObject *obj = (PyListObject *)p;
 
-	if (head == NULL) /* non-existing list is not */
-		return (0);
+	printf("[*] Size of the Python List = %ld\n", size);
+	printf("[*] Allocated = %ld\n", obj->allocated);
 
-	if (*head == NULL) /* empty list is palindrome */
-		return (1);
-
-	while (tmp) /* find size of linked list */
+	for (i = 0; i < size; i++)
 	{
-		tmp = tmp->next;
-		size += 1;
+		printf("Element %ld: %s\n", i, Py_TYPE(obj->ob_item[i])->tp_name);
 	}
-	if (size == 1) /* single node list is palindrome */
-		return (1);
-
-	tmp = *head;
-	while (tmp) /* pull node data into array to compare */
-	{
-		data[i++] = tmp->n;
-		tmp = tmp->next;
-	}
-
-	for (i = 0; i <= (size/2); i++)
-	{
-		if (data[i] != data[size - i - 1])
-			return (0);
-	}
-	return (1);
 }
